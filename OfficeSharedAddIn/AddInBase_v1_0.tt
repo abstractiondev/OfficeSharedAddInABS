@@ -16,56 +16,76 @@
 <#@ include file="..\..\abscommon\CommonInclude\Common\CommonCodeblocks.ttinclude" #>
 <#@ include file="PowerPointAddIn_v1_0.ttinclude" #>
 <#   
-	string templateDirectoryName = Path.GetDirectoryName(Host.TemplateFile);
-	string directoryName = templateDirectoryName + @"\Content_v1_0";
+	// Abstraction(s) that are supposed to be shared must be shared by default.
+	// This is simply because any change to "shared" makes it modified compared to the shared version.
+	// Thus making abstraction "local" allows also making the changes that make it behave like "local".
+	// To make the abstraction "local" make following changes:
+	// 1. Modify the output - directive right on top of the file (2nd line) from "?" to ".designer.cs"
+	// 2. Set the AbstractionShareLevel below to Shared 
+	// 3. After the changes, the abstraction starts to generate its output right below the template:
+	// - Change the .cs file properties so that it doesn't compile in the abstraction-project
+	// - Link the output .cs file to appropriate projects (to replace the links from AbstractionContent/Out directory)
+	// 4. If necessary, copy over and alter the include-files specified for common includes
+	
+	// ShareLevel = AbstractionShareLevel.Shared;
+
+
+	string directoryName = GetContentDirectoryFromTemplateFullPath(Host.TemplateFile, IsLocal == false);
 	string[] xmlFileNames = Directory.GetFiles(directoryName, "*.xml");
 	
 	foreach(string xmlFileName in xmlFileNames)
 	{
-		PowerPointAddIn_v1_0.PowerPointAddInAbstraction abstraction = LoadXml<PowerPointAddIn_v1_0.PowerPointAddInAbstraction>(xmlFileName);
+		PowerPointAddInAbstraction abstraction = LoadXml<PowerPointAddInAbstraction>(xmlFileName);
 		GenerateAddInBase(abstraction);
 	}
+	
+	if(IsLocal == false)
+	{
+		WriteContentToSingleOutput(Host.TemplateFile, ".designer.cs");
+	}
+	
 #>
 <#+ 
-	void GenerateStartupProcedures(PowerPointAddIn_v1_0.PowerPointAddInType addIn)
+
+	void GenerateStartupProcedures(PowerPointAddInType addIn)
 	{
 	}
 
-	void GenerateShutdownProcedures(PowerPointAddIn_v1_0.PowerPointAddInType addIn)
+	void GenerateShutdownProcedures(PowerPointAddInType addIn)
 	{
 	}
 
-	void GenerateEventFields(PowerPointAddIn_v1_0.EventType[] events)
+	void GenerateEventFields(EventType[] events)
 	{
 		if(events == null)
 			return;
-		foreach(PowerPointAddIn_v1_0.EventType eventEntry in events)
+		foreach(EventType eventEntry in events)
 		{
 			GenerateEventField(eventEntry);
 		}
 	}
 	
 	
-	string GetEventHandlerName(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetEventHandlerName(EventType eventEntry)
 	{
 		string eventName = eventEntry.name;
 		string powerPointType = eventEntry.powerPointEvent.ToString();
 		return 	"HandlerForEvent_" + eventName + "_" + powerPointType;
 	}
 	
-	string GetEventHandlerTypeName(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetEventHandlerTypeName(EventType eventEntry)
 	{
 		string eventFieldType = eventEntry.powerPointEvent.ToString();
 		return 	"EApplication_" + eventFieldType + "EventHandler";
 	}
 	
-	string GetEventFieldName(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetEventFieldName(EventType eventEntry)
 	{
 		string eventName = eventEntry.name;
 		return "_" + eventName + "Field";
 	}
 	
-	void GenerateEventField(PowerPointAddIn_v1_0.EventType eventEntry)
+	void GenerateEventField(EventType eventEntry)
 	{
 		string eventFieldName = GetEventFieldName(eventEntry);
 		string eventHandlerTypeName = GetEventHandlerTypeName(eventEntry);
@@ -74,7 +94,7 @@
 		<#+
 	}
 	
-	void GenerateEventRegistration(PowerPointAddIn_v1_0.EventType[] events)
+	void GenerateEventRegistration(EventType[] events)
 	{ 
 		#>
 	    private void RegisterEvents(Application powerPointApp)
@@ -82,7 +102,7 @@
 			<#+ 
 			if(events != null)
 			{
-				foreach(PowerPointAddIn_v1_0.EventType eventEntry in events)
+				foreach(EventType eventEntry in events)
 				{
 					GenerateEventRegistration(eventEntry);
 				}
@@ -92,7 +112,7 @@
 		<#+
 	}
 
-	void GenerateEventRegistration(PowerPointAddIn_v1_0.EventType eventEntry)
+	void GenerateEventRegistration(EventType eventEntry)
 	{
 		string eventFieldName = GetEventFieldName(eventEntry);
 		string powerPointEventName = eventEntry.powerPointEvent.ToString();
@@ -108,7 +128,7 @@
 
 
 	
-	void GenerateEventUnregistration(PowerPointAddIn_v1_0.EventType[] events)
+	void GenerateEventUnregistration(EventType[] events)
 	{
 		#>
 	    private void UnregisterEvents(Application powerPointApp)
@@ -116,7 +136,7 @@
 			<#+ 
 			if(events != null)
 			{
-				foreach(PowerPointAddIn_v1_0.EventType eventEntry in events)
+				foreach(EventType eventEntry in events)
 				{
 					GenerateEventUnregistration(eventEntry);
 				}
@@ -126,7 +146,7 @@
 		<#+
 	}
 
-	void GenerateEventUnregistration(PowerPointAddIn_v1_0.EventType eventEntry)
+	void GenerateEventUnregistration(EventType eventEntry)
 	{
 		string eventFieldName = GetEventFieldName(eventEntry);
 		string powerPointEventName = eventEntry.powerPointEvent.ToString();
@@ -139,7 +159,7 @@
 	}
 
 	
-	void GenerateEventHandlers(PowerPointAddIn_v1_0.EventType[] events)
+	void GenerateEventHandlers(EventType[] events)
 	{
 		if(events == null)
 			return;
@@ -182,58 +202,58 @@
 		}
 	}
 	
-	ParameterEntry[] GetParameterEntries(PowerPointAddIn_v1_0.EventType eventEntry)
+	ParameterEntry[] GetParameterEntries(EventType eventEntry)
 	{
 		switch(eventEntry.powerPointEvent)
 		{
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.AfterNewPresentation:
+			case EventTypePowerPointEvent.AfterNewPresentation:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.AfterPresentationOpen:
+			case EventTypePowerPointEvent.AfterPresentationOpen:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.ColorSchemeChanged:
+			case EventTypePowerPointEvent.ColorSchemeChanged:
 				return ParameterEntry.CreateList("SlideRange slideRange");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.NewPresentation:
+			case EventTypePowerPointEvent.NewPresentation:
 				throw new NotSupportedException("NewPresentation event is not currently supported, because there is ambiguity with public property. Try to write the code manually to understand the issue.");
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationBeforeSave:
+			case EventTypePowerPointEvent.PresentationBeforeSave:
 				return ParameterEntry.CreateList("Presentation presentation, ref bool cancel");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationClose:
+			case EventTypePowerPointEvent.PresentationClose:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationNewSlide:
+			case EventTypePowerPointEvent.PresentationNewSlide:
 				return ParameterEntry.CreateList("Slide slide");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationOpen:
+			case EventTypePowerPointEvent.PresentationOpen:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationPrint:
+			case EventTypePowerPointEvent.PresentationPrint:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationSave:
+			case EventTypePowerPointEvent.PresentationSave:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.PresentationSync:
+			case EventTypePowerPointEvent.PresentationSync:
 				return ParameterEntry.CreateList("Presentation presentation, MsoSyncEventType syncEventType");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideSelectionChanged:
+			case EventTypePowerPointEvent.SlideSelectionChanged:
 				return ParameterEntry.CreateList("SlideRange slideRange");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowBegin:
+			case EventTypePowerPointEvent.SlideShowBegin:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowEnd:
+			case EventTypePowerPointEvent.SlideShowEnd:
 				return ParameterEntry.CreateList("Presentation presentation");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowNextBuild:
+			case EventTypePowerPointEvent.SlideShowNextBuild:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowNextClick:
+			case EventTypePowerPointEvent.SlideShowNextClick:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow , Effect effect");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowNextSlide:
+			case EventTypePowerPointEvent.SlideShowNextSlide:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowOnNext:
+			case EventTypePowerPointEvent.SlideShowOnNext:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.SlideShowOnPrevious:
+			case EventTypePowerPointEvent.SlideShowOnPrevious:
 				return ParameterEntry.CreateList("SlideShowWindow slideShowWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.WindowActivate:
+			case EventTypePowerPointEvent.WindowActivate:
 				return ParameterEntry.CreateList("Presentation presentation, DocumentWindow documentWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.WindowBeforeDoubleClick:
+			case EventTypePowerPointEvent.WindowBeforeDoubleClick:
 				return ParameterEntry.CreateList("Selection selection, ref bool cancel");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.WindowBeforeRightClick:
+			case EventTypePowerPointEvent.WindowBeforeRightClick:
 				return ParameterEntry.CreateList("Selection selection, ref bool cancel");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.WindowDeactivate:
+			case EventTypePowerPointEvent.WindowDeactivate:
 				return ParameterEntry.CreateList("Presentation presentation, DocumentWindow documentWindow");
-			case PowerPointAddIn_v1_0.EventTypePowerPointEvent.WindowSelectionChange:
+			case EventTypePowerPointEvent.WindowSelectionChange:
 				return ParameterEntry.CreateList("Selection selection");
 			default:
 				return ParameterEntry.CreateList("String revisitTheGeneratorForthisTypeOfSupport");
@@ -241,14 +261,14 @@
 		
 	}
 	
-	string GetParameterDefinition(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetParameterDefinition(EventType eventEntry)
 	{
 		ParameterEntry[] paramEntries = GetParameterEntries(eventEntry);
 		string[] resultArray = paramEntries.Select(pe => (pe.pIsRef ? "ref " : "") + pe.pType + " " + pe.pName).ToArray();
 		return String.Join(", ", resultArray);
 	}
 	
-	string GetParameterCallList(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetParameterCallList(EventType eventEntry)
 	{
 		ParameterEntry[] paramEntries = GetParameterEntries(eventEntry);
 		string[] resultArray = paramEntries.Select(pe => (pe.pIsRef ? "ref " : "") + pe.pName).ToArray();
@@ -260,14 +280,14 @@
 		return "EventHandlerImpl." + fullEventName;
 	}
 	
-	string GetEventHandlerImplementationName(PowerPointAddIn_v1_0.EventType eventEntry)
+	string GetEventHandlerImplementationName(EventType eventEntry)
 	{
 		string eventName = eventEntry.name;
 		string powerPointName = eventEntry.powerPointEvent.ToString();
 		return GetEventHandlerImplementationName(eventName + "_" + powerPointName);
 	}
 	
-	void GenerateEventHandler(PowerPointAddIn_v1_0.EventType eventEntry)
+	void GenerateEventHandler(EventType eventEntry)
 	{
 		string eventName = eventEntry.name;
 		string handlerName = GetEventHandlerName(eventEntry);
@@ -284,19 +304,19 @@
 		<#+
 	}
 		
-	string GetCommandHandlerMethodName(PowerPointAddIn_v1_0.CommandType command)
+	string GetCommandHandlerMethodName(CommandType command)
 	{
 		string commandMethodName = GetMethodNameFromCommandName(command.name);
 		return "CommandHandler." + commandMethodName;
 	}
 	
-	void GenerateCommandHandlers(PowerPointAddIn_v1_0.CommandType[] commands)
+	void GenerateCommandHandlers(CommandType[] commands)
 	{
 		if(commands == null)
 			return;
 		#>
 		<#+
-		foreach(PowerPointAddIn_v1_0.CommandType command in commands)
+		foreach(CommandType command in commands)
 		{
 			string commandMethodName = GetMethodNameFromCommandName(command.name);
 			string commandHandlerMethodName = GetCommandHandlerMethodName(command);
@@ -311,9 +331,9 @@
 		}
 	}
 	
-	string GetRibbonBarExtensibilityInterfaceDefinition(PowerPointAddIn_v1_0.PowerPointAddInAbstraction abstraction)
+	string GetRibbonBarExtensibilityInterfaceDefinition(PowerPointAddInAbstraction abstraction)
 	{
-		PowerPointAddIn_v1_0.UserInterfaceType addInUI = abstraction.PowerPointAddIn.UserInterface;
+		UserInterfaceType addInUI = abstraction.PowerPointAddIn.UserInterface;
 		if(addInUI != null && addInUI.RibbonBar != null)
 			return ", IRibbonExtensibility";
 		return "";
@@ -324,7 +344,7 @@
 		return "ExecuteCommand_" + commandName;
 	}
 	
-	void GenerateControlGroupButton(PowerPointAddIn_v1_0.ButtonType button)
+	void GenerateControlGroupButton(ButtonType button)
 	{
 		string buttonName = button.name;
 		string buttonSize = button.size.ToString();
@@ -348,9 +368,9 @@
 		return "OnCheckBox" + checkBoxName + "Clicked";
 	}
 	
-	void GenerateControlGroupCheckBox(PowerPointAddIn_v1_0.CheckBoxType checkBox)
+	void GenerateControlGroupCheckBox(CheckBoxType checkBox)
 	{
-		if(checkBox.isEnabled == PowerPointAddIn_v1_0.CheckBoxTypeIsEnabled.Dynamic)
+		if(checkBox.isEnabled == CheckBoxTypeIsEnabled.Dynamic)
 			throw new NotSupportedException("CheckBox isEnabled=Dynamic is not currently supported");
 		string checkBoxName = checkBox.name;
 		string checkBoxLabel = checkBox.label;
@@ -372,10 +392,10 @@
 	
 	void GenerateControlGroupItem(object item)
 	{
-		if(item is PowerPointAddIn_v1_0.ButtonType)
-			GenerateControlGroupButton((PowerPointAddIn_v1_0.ButtonType) item);
-		else if(item is PowerPointAddIn_v1_0.CheckBoxType)
-			GenerateControlGroupCheckBox((PowerPointAddIn_v1_0.CheckBoxType) item);
+		if(item is ButtonType)
+			GenerateControlGroupButton((ButtonType) item);
+		else if(item is CheckBoxType)
+			GenerateControlGroupCheckBox((CheckBoxType) item);
 		else if(item is string) // Misc
 		{
 			#>
@@ -385,7 +405,7 @@
 			throw new NotSupportedException("Control type: " + item.GetType());
 	}
 	
-	void GenerateTabControlGroup(PowerPointAddIn_v1_0.ControlGroupType controlGroup)
+	void GenerateTabControlGroup(ControlGroupType controlGroup)
 	{
 		string groupName = controlGroup.name;
 		string groupLabel = controlGroup.label;
@@ -399,14 +419,14 @@
 		<#+
 	}
 	
-	void GenerateRibbonBarTab(PowerPointAddIn_v1_0.TabType tab)
+	void GenerateRibbonBarTab(TabType tab)
 	{
 		string tabName = tab.name;
 		string tabLabel = tab.label;
 		#>
           <tab id=""<#= tabName #>"" label=""<#= tabLabel #>""> 
 			<#+
-			foreach(PowerPointAddIn_v1_0.ControlGroupType controlGroup in tab.ControlGroup)
+			foreach(ControlGroupType controlGroup in tab.ControlGroup)
 			{
 				GenerateTabControlGroup(controlGroup);
 			}
@@ -416,14 +436,14 @@
 		<#+
 	}
 
-	void GenerateCallbackMethods(PowerPointAddIn_v1_0.CheckBoxType checkBox)
+	void GenerateCallbackMethods(CheckBoxType checkBox)
 	{
 		string checkBoxName = checkBox.name;
 		string checkedStateVariable = "checkBox_" + checkBoxName + "_CheckedState";
 		string getOnPressedMethodName = GetCheckBoxPressedMethodName(checkBoxName);
 		string getOnActionMethodName = GetOnActionCheckBoxMethodName(checkBoxName);
-		bool isDynamic = checkBox.initialCheckedState == PowerPointAddIn_v1_0.CheckBoxTypeInitialCheckedState.Dynamic;
-		bool fixedValue = checkBox.initialCheckedState == PowerPointAddIn_v1_0.CheckBoxTypeInitialCheckedState.Checked;
+		bool isDynamic = checkBox.initialCheckedState == CheckBoxTypeInitialCheckedState.Dynamic;
+		bool fixedValue = checkBox.initialCheckedState == CheckBoxTypeInitialCheckedState.Checked;
 		string fixedValueStr = fixedValue ? "true" : "false";
 		string stateSetStr = checkedStateVariable + " = " +
 			(isDynamic ? "StateHandlerImpl.GetCheckBox_" + checkBoxName + "_InitialState(checkBox)" : fixedValueStr);
@@ -448,12 +468,12 @@
 	
 	void GenerateUICallbackMethods(object controlGroupItem)
 	{
-		if(controlGroupItem is PowerPointAddIn_v1_0.CheckBoxType)
-			GenerateCallbackMethods((PowerPointAddIn_v1_0.CheckBoxType) controlGroupItem);
+		if(controlGroupItem is CheckBoxType)
+			GenerateCallbackMethods((CheckBoxType) controlGroupItem);
 	}
 
 	
-	void GenerateUICallbackMethods(PowerPointAddIn_v1_0.ControlGroupType[] controlGroups)
+	void GenerateUICallbackMethods(ControlGroupType[] controlGroups)
 	{
 		foreach(object controlGroupItem in controlGroups.SelectMany(cgs => cgs.Items))
 		{
@@ -461,7 +481,7 @@
 		}
 	}
 	
-	void GenerateRibbonBarUI(PowerPointAddIn_v1_0.TabType tab)
+	void GenerateRibbonBarUI(TabType tab)
 	{
 		#>
         public string GetCustomUI(string RibbonID)
@@ -482,14 +502,14 @@
 		GenerateUICallbackMethods(tab.ControlGroup);
 	}
 	
-	void GenerateUI(PowerPointAddIn_v1_0.UserInterfaceType addInUI)
+	void GenerateUI(UserInterfaceType addInUI)
 	{
 		if(addInUI == null || addInUI.RibbonBar == null || addInUI.RibbonBar.Tab == null)
 			return;
 		GenerateRibbonBarUI(addInUI.RibbonBar.Tab);
 	}
 
-	void GenerateUserSpecificConfig(PowerPointAddIn_v1_0.PowerPointAddInType addIn)
+	void GenerateUserSpecificConfig(PowerPointAddInType addIn)
 	{
 		if(addIn.Options == null || addIn.Options.userSpecificConfig == false)
 			return;
@@ -499,9 +519,9 @@
 	}
 		
 	
-	void GenerateAddInBase(PowerPointAddIn_v1_0.PowerPointAddInAbstraction abstraction)
+	void GenerateAddInBase(PowerPointAddInAbstraction abstraction)
 	{
-		PowerPointAddIn_v1_0.PowerPointAddInType addIn = abstraction.PowerPointAddIn;
+		PowerPointAddInType addIn = abstraction.PowerPointAddIn;
 		string addInNamespace = addIn.namespaceName;
 		string addInName = addIn.name; 
 		string addInGuidValue = addIn.typelibIdentifier;

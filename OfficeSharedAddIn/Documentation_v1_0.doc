@@ -202,64 +202,11 @@ div.WordSection1
 <div class=WordSection1>
 
 		
-		<div style='border:none;border-bottom:solid #4F81BD 1.0pt;padding:0cm 0cm 4.0pt 0cm'>
-<p class=MsoTitle>PowerPoint Add-In: PresentationTracker AddIn</p>
-</div>
-<h1><span lang=EN-US>Overview</span></h1>
-<p class=MsoNormal>PresentationTracker - initially made for Microsoft TechDays 2011 in Finland to Tweet during the presentations. Made for demonstrating the abstractions, and still serving for that purpose.</p>
-		
-				<p>... Manually insert TOC in Word here ...</p>
-		<h1><a name="_options"><span lang=EN-US>Options</span></a></h1>
-<p class=MsoNormal>Contains user specific config.</p>
-		
-		<h1><a name="_ribbonBar"><span lang=EN-US>Ribbon Bar UI - Presentation Tracker Demo (PresentationTrackerDemo)</span></a></h1>
-		<h2><a name="_controlGroup_General"><span lang=EN-US>Control Group - General (General)</span></a></h2>
-<p class=MsoNormal>General controls reside here.</p>
-		<h3><a name="_button_VerifyPIN"><span lang=EN-US>Button - Verify Twitter PIN (VerifyPIN)</span></a></h3>
-<p class=MsoNormal><b>Executes:</b> VerifyPIN</p>
-<p class=MsoNormal><b>Office Icon:</b> HappyFace</p>
-<p class=MsoNormal><b>Size:</b> normal</p>
-<p class=MsoNormal></p>
-		<h3><a name="_button_SetSubject"><span lang=EN-US>Button - Set Subject (SetSubject)</span></a></h3>
-<p class=MsoNormal><b>Executes:</b> SetSubject</p>
-<p class=MsoNormal><b>Office Icon:</b> HappyFace</p>
-<p class=MsoNormal><b>Size:</b> normal</p>
-<p class=MsoNormal></p>
-		<h3><a name="_button_OpenTwitter"><span lang=EN-US>Button - Open Twitter (OpenTwitter)</span></a></h3>
-<p class=MsoNormal><b>Executes:</b> OpenTwitterInBrowser</p>
-<p class=MsoNormal><b>Office Icon:</b> HappyFace</p>
-<p class=MsoNormal><b>Size:</b> large</p>
-<p class=MsoNormal>Open Twitter when clicked.</p>
-		<h3><a name="_checkBox_TweetingEnabled"><span lang=EN-US>CheckBox - Tweeting Enabled (TweetingEnabled)</span></a></h3>
-<p class=MsoNormal><b>Initial State:</b> Dynamic</p>
-<p class=MsoNormal><b>Enabled State:</b> True</p>
-<p class=MsoNormal>Toggles Tweeting on/off. Stores the information in user-specific options. </p>
-		<h1><a name="_commands"><span lang=EN-US>Commands</span></a></h1>
-		<h2><a name="_command_VerifyPIN"><span lang=EN-US>VerifyPIN</span></a></h2>
-<p class=MsoNormal>Verifies the PIN configuration</p>
-		
-		<h2><a name="_command_SetSubject"><span lang=EN-US>SetSubject</span></a></h2>
-<p class=MsoNormal>Subject to add in presentation tweet</p>
-		
-		<h2><a name="_command_OpenTwitterInBrowser"><span lang=EN-US>OpenTwitterInBrowser</span></a></h2>
-<p class=MsoNormal>Open Twitter in the default browser.</p>
-		
-		<h1><a name="_events"><span lang=EN-US>Events</span></a></h1>
-		<h2><a name="_event_WarnForTweeterOnNew"><span lang=EN-US>WarnForTweeterOnNew</span></a></h2>
-<p class=MsoNormal><b>PowerPoint Event:</b> AfterNewPresentation</p>
-<p class=MsoNormal>Warns the user for the Tweeter, when new presentation is created.</p>
-		
-		<h2><a name="_event_WarnForTweeter"><span lang=EN-US>WarnForTweeter</span></a></h2>
-<p class=MsoNormal><b>PowerPoint Event:</b> PresentationOpen</p>
-<p class=MsoNormal>Warns the user for Tweeting tracker being installed and active.</p>
-		
-		<h2><a name="_event_TweetSlideChange"><span lang=EN-US>TweetSlideChange</span></a></h2>
-<p class=MsoNormal><b>PowerPoint Event:</b> SlideShowNextSlide</p>
-<p class=MsoNormal>Tweets the subject + first line of the slide's notes to Twitter.</p>
-		
 		</div>
 
 </body>
 		
 		
 </html>
+	
+	

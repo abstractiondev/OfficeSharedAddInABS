@@ -53,31 +53,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyInfo_v1_0.tt</DependentUpon>
     </None>
-    <None Include="OfficeSharedAddIn\AddInBase_v1_0.designer.cs">
-      <DependentUpon>AddInBase_v1_0.tt</DependentUpon>
+    <Compile Include="OfficeSharedAddIn\AddInBase_v1_0.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </None>
+      <DependentUpon>AddInBase_v1_0.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common\CommonCodeblocks.ttinclude" />
-    <None Include="Common\XSDToIncludeGenerator.ttinclude" />
     <None Include="OfficeSharedAddIn\AssemblyInfo_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo_v1_0.designer.cs</LastGenOutput>
-    </None>
-    <None Include="OfficeSharedAddIn\Content_v1_0\PowerPointAddIn_v1_0.log">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PowerPointAddIn_v1_0.tt</DependentUpon>
     </None>
     <None Include="OfficeSharedAddIn\Content_v1_0\PowerPointAddIn_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PowerPointAddIn_v1_0.xsd</DependentUpon>
-      <LastGenOutput>PowerPointAddIn_v1_0.log</LastGenOutput>
     </None>
     <None Include="OfficeSharedAddIn\Content_v1_0\PowerPointAddIn_v1_0.xsd">
       <SubType>Designer</SubType>
@@ -117,9 +109,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OfficeSharedAddIn\Content_v1_0\PresentationTracker.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="OfficeSharedAddIn\RegistrationHowTo_v1_0.txt">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
