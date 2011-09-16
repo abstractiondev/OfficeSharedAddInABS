@@ -114,6 +114,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RegistrationHowTo_v1_0.tt</DependentUpon>
     </Content>
+    <Content Include="Options.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
