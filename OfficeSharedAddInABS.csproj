@@ -80,14 +80,8 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AddInBase_v1_0.designer.cs</LastGenOutput>
     </None>
-    <None Include="OfficeSharedAddIn\Documentation_v1_0.doc">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Documentation_v1_0.tt</DependentUpon>
-    </None>
     <None Include="OfficeSharedAddIn\Documentation_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Documentation_v1_0.doc</LastGenOutput>
     </None>
     <None Include="OfficeSharedAddIn\RegistrationHowTo_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

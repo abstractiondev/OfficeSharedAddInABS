@@ -1,5 +1,5 @@
 ﻿<#@ template debug="true" hostSpecific="true" #>
-<#@ output extension=".txt" #>
+<#@ output extension="?" #>
 <#@ Assembly Name="System.Core.dll" #>
 <#@ Assembly Name="System.Xml.dll" #>
 <#@ Assembly Name="System.Xml.Linq.dll" #>
@@ -16,36 +16,23 @@
 <#@ include file="..\..\abscommon\CommonInclude\Common\CommonCodeblocks.ttinclude" #>
 <#@ include file="PowerPointAddIn_v1_0.ttinclude" #>
 <#   
-	// Abstraction(s) that are supposed to be shared must be shared by default.
-	// This is simply because any change to "shared" makes it modified compared to the shared version.
-	// Thus making abstraction "local" allows also making the changes that make it behave like "local".
-	// To make the abstraction "local" make following changes:
-	// 1. Modify the output - directive right on top of the file (2nd line) from "?" to ".designer.cs"
-	// 2. Set the AbstractionShareLevel below to Shared 
-	// 3. After the changes, the abstraction starts to generate its output right below the template:
-	// - Change the .cs file properties so that it doesn't compile in the abstraction-project
-	// - Link the output .cs file to appropriate projects (to replace the links from AbstractionContent/Out directory)
-	// 4. If necessary, copy over and alter the include-files specified for common includes
-	
-	// ShareLevel = AbstractionShareLevel.Shared;
-
-
-	string directoryName = GetContentDirectoryFromTemplateFullPath(Host.TemplateFile, IsLocal == false);
-	string[] xmlFileNames = Directory.GetFiles(directoryName, "*.xml");
-	
-	foreach(string xmlFileName in xmlFileNames)
-	{
-		PowerPointAddInAbstraction abstraction = LoadXml<PowerPointAddInAbstraction>(xmlFileName);
-		GenerateRegistrationHelp(abstraction);
-	}
-	
-	if(IsLocal == false)
-	{
-		WriteContentToSingleOutput(Host.TemplateFile, ".doc");
-	}
-	
+	TransformGenerator<PowerPointAddInAbstraction>(GenerateRoot, ".txt");	
 #>
 <#+ 
+	void SetCurrentAbstraction(object abs)
+	{
+		CurrentAbstraction = (PowerPointAddInAbstraction) abs;
+	}
+	
+	PowerPointAddInAbstraction CurrentAbstraction;
+	
+	void GenerateRoot()
+	{
+		GenerateRegistrationHelp(CurrentAbstraction);
+	}
+
+	
+	
 	void GenerateRegistrationHelp(PowerPointAddInAbstraction abstraction)
 	{
 		PowerPointAddInType addIn = abstraction.PowerPointAddIn;

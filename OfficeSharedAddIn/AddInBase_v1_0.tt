@@ -1,5 +1,5 @@
 ﻿<#@ template debug="true" hostSpecific="true" #>
-<#@ output extension=".designer.cs" #>
+<#@ output extension="?" #>
 <#@ Assembly Name="System.Core.dll" #>
 <#@ Assembly Name="System.Xml.dll" #>
 <#@ Assembly Name="System.Xml.Linq.dll" #>
@@ -16,17 +16,20 @@
 <#@ include file="..\..\abscommon\CommonInclude\Common\CommonCodeblocks.ttinclude" #>
 <#@ include file="PowerPointAddIn_v1_0.ttinclude" #>
 <#   
-	TransformGenerator(GenerateRoot);	
+	TransformGenerator<PowerPointAddInAbstraction>(GenerateRoot, ".designer.cs");	
 #>
 <#+ 
+	void SetCurrentAbstraction(object abs)
+	{
+		CurrentAbstraction = (PowerPointAddInAbstraction) abs;
+	}
 	
+	PowerPointAddInAbstraction CurrentAbstraction;
 	
 	void GenerateRoot()
 	{
 		GenerateAddInBase(CurrentAbstraction);
 	}
-	
-	PowerPointAddInAbstraction CurrentAbstraction;
 	
 	void GenerateStartupProcedures(PowerPointAddInType addIn)
 	{
