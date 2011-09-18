@@ -48,22 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="OfficeSharedAddIn\AssemblyInfo_v1_0.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AssemblyInfo_v1_0.tt</DependentUpon>
-    </None>
-    <Compile Include="OfficeSharedAddIn\AddInBase_v1_0.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AddInBase_v1_0.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OfficeSharedAddIn\AssemblyInfo_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AssemblyInfo_v1_0.designer.cs</LastGenOutput>
     </None>
     <None Include="OfficeSharedAddIn\Content_v1_0\PowerPointAddIn_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -78,23 +67,15 @@
     </None>
     <None Include="OfficeSharedAddIn\AddInBase_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AddInBase_v1_0.designer.cs</LastGenOutput>
     </None>
     <None Include="OfficeSharedAddIn\Documentation_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Include="OfficeSharedAddIn\RegistrationHowTo_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>RegistrationHowTo_v1_0.txt</LastGenOutput>
-    </None>
-    <None Include="OfficeSharedAddIn\RegistryKey_v1_0.reg">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RegistryKey_v1_0.tt</DependentUpon>
     </None>
     <None Include="OfficeSharedAddIn\RegistryKey_v1_0.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>RegistryKey_v1_0.reg</LastGenOutput>
     </None>
     <None Include="OfficeSharedAddIn\PowerPointAddIn_v1_0.ttinclude" />
   </ItemGroup>
@@ -103,11 +84,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OfficeSharedAddIn\RegistrationHowTo_v1_0.txt">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RegistrationHowTo_v1_0.tt</DependentUpon>
-    </Content>
     <Content Include="Options.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
